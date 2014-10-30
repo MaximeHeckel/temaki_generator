@@ -1,10 +1,9 @@
 package generator
 
 import (
-	//"fmt"
+	"bytes"
 	"math/rand"
 	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -15,8 +14,8 @@ func Generate() string {
 }
 
 func findAvailableDomainName() string {
-	consonants := []string{"h", "k", "h", "n", "m", "y", "d", "r"}
-	vowels := []string{"a", "e", "i", "o", "u"}
+	consonants := []rune{'h', 'k', 'h', 'n', 'm', 'y', 'd', 'r'}
+	vowels := []rune{'a', 'e', 'i', 'o', 'u'}
 	domainName := ""
 	available := false
 
@@ -34,17 +33,16 @@ func findAvailableDomainName() string {
 	return domainName
 }
 
-func constructString(array1 []string, array2 []string) string {
-	s := []string{}
+func constructString(array1 []rune, array2 []rune) string {
+	s := &bytes.Buffer{}
 	for i := 0; i < 3; i++ {
-		s = append(s, pickRandomLetter(array1))
-		s = append(s, pickRandomLetter(array2))
+		s.WriteRune(pickRandomLetter(array1))
+		s.WriteRune(pickRandomLetter(array2))
 	}
-	str := strings.Join(s, "")
-	return str
+	return s.String()
 }
 
-func pickRandomLetter(array []string) string {
+func pickRandomLetter(array []rune) rune {
 	return array[randInt(1, len(array))]
 }
 func randInt(min int, max int) int {
