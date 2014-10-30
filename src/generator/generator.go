@@ -1,25 +1,17 @@
-package main
+package generator
 
 import (
-	"fmt"
+	//"fmt"
 	"math/rand"
 	"os/exec"
 	"strings"
 	"time"
 )
 
-func main() {
+func Generate() string {
 	rand.Seed(time.Now().UTC().UnixNano())
-
-	domains := []string{}
-	for i := 0; i < 10; i++ {
-		domains = append(domains, findAvailableDomainName())
-	}
-
-	fmt.Print("Here's 10 available domains ! ")
-	for i := 0; i < len(domains); i++ {
-		fmt.Print(domains[i]+".com" + " ")
-	}
+	domains := findAvailableDomainName()
+	return domains
 }
 
 func findAvailableDomainName() string {
@@ -30,13 +22,13 @@ func findAvailableDomainName() string {
 
 	for !available {
 		domainName = constructString(consonants, vowels)
-		fmt.Print("testing " + domainName+".com" + " ... ")
+		//fmt.Print("testing " + domainName+".com" + " ... ")
 		available = executeHostCommand(domainName + ".com")
-		if available {
+		/*if available {
 			fmt.Println("available !")
 		} else {
 			fmt.Println("not available.")
-		}
+		}*/
 	}
 
 	return domainName
