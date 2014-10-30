@@ -5,16 +5,25 @@ import (
     "time"
     "math/rand"
     "strings"
-    //"os/exec"
+    "os/exec"
 )
 
 func main() {
   rand.Seed(time.Now().UTC().UnixNano())
   consonne := []string{"h","k","h","n","m","y","d","r"}
   voyelle := []string{"a","e","i","o","u"}
-  //fmt.Println(pickRandomLetter(consonne))
-  //fmt.Println(pickRandomLetter(voyelle))
-  fmt.Println(constructString(consonne,voyelle))
+  s := constructString(consonne,voyelle)
+  fmt.Println(s)
+  s = s + ".com"
+  fmt.Println(s)
+  /*cmd := exec.Command("host",s)
+  output, err := cmd.Output()
+  if err != nil {
+    fmt.Println(err)
+  } else {
+    fmt.Println(string(output))
+  }*/
+  executeHostCommand(s)
 }
 
 func randInt(min int, max int) int {
@@ -35,4 +44,15 @@ func constructString(array1 []string, array2 []string) string{
   }
   str := strings.Join(s,"")
   return str
+}
+
+func executeHostCommand(s string) string {
+  cmd := exec.Command("host",s)
+  output, err := cmd.Output()
+  if err != nil {
+    fmt.Println(err)
+    return "error"
+  } else {
+    return string(output)
+  }
 }
