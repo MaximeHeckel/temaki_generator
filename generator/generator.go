@@ -20,7 +20,7 @@ func findAvailableDomainName() string {
 	available := false
 
 	for !available {
-		domainName = constructString(consonants, vowels)
+		domainName = ConstructString(consonants, vowels)
 		//fmt.Print("testing " + domainName+".com" + " ... ")
 		available = executeHostCommand(domainName + ".com")
 		/*if available {
@@ -33,7 +33,7 @@ func findAvailableDomainName() string {
 	return domainName
 }
 
-func constructString(array1 []rune, array2 []rune) string {
+func ConstructString(array1 []rune, array2 []rune) string {
 	s := &bytes.Buffer{}
 	for i := 0; i < 3; i++ {
 		s.WriteRune(pickRandomLetter(array1))
