@@ -18,7 +18,7 @@ func main() {
 
 	fmt.Print("Here's 10 available domains ! ")
 	for i := 0; i < len(domains); i++ {
-		fmt.Print(domains[i] + " ")
+		fmt.Print(domains[i]+".com" + " ")
 	}
 }
 
@@ -30,7 +30,7 @@ func findAvailableDomainName() string {
 
 	for !available {
 		domainName = constructString(consonants, vowels)
-		fmt.Print("testing " + domainName + "... ")
+		fmt.Print("testing " + domainName+".com" + " ... ")
 		available = executeHostCommand(domainName + ".com")
 		if available {
 			fmt.Println("available !")
