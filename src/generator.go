@@ -11,12 +11,11 @@ import (
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	cnt := 0
 	domains := []string{}
-	for cnt < 10 {
+	for i := 0; i < 10; i++ {
 		domains = append(domains, findAvailableDomainName())
-		cnt++
 	}
+
 	fmt.Print("Here's 10 available domains ! ")
 	for i := 0; i < len(domains); i++ {
 		fmt.Print(domains[i] + " ")
@@ -54,18 +53,16 @@ func constructString(array1 []string, array2 []string) string {
 	return str
 }
 
-func randInt(min int, max int) int {
-	return min + rand.Intn(max-min)
-}
-
 func pickRandomLetter(array []string) string {
 	return array[randInt(1, len(array))]
+}
+func randInt(min int, max int) int {
+	return min + rand.Intn(max-min)
 }
 
 func executeHostCommand(s string) bool {
 	cmd := exec.Command("host", s)
 	_, err := cmd.Output()
-
 	if err != nil {
 		return true
 	} else {
