@@ -35,7 +35,7 @@ func init() {
 	go func() {
 		for domain := range domains {
 			httpDomains <- domain
-			dnsDomains <- domain
+			dnsDomains <- domain + ".com"
 		}
 		close(httpDomains)
 		close(dnsDomains)
@@ -43,7 +43,7 @@ func init() {
 
 	go func() {
 		for i := 0; i < 100; i++ {
-			domains <- generator.ConstructString(consonants, vowels) + ".com"
+			domains <- generator.ConstructString(consonants, vowels)
 		}
 
 		close(domains)
