@@ -9,7 +9,7 @@ import (
 func main() {
 
 	m := martini.Classic()
-	m.Use(render.Renderer(render.Options{Directory: "src/generator/templates"}))
+	m.Use(render.Renderer(render.Options{Directory: "generator/templates"}))
 
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, "main", generator.Generate())
