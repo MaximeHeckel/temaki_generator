@@ -5,33 +5,50 @@ import (
 	"math/rand"
 	"os/exec"
 	"time"
+	//"net"
+	//"fmt"
+	//"sync"
 )
 
-func Generate() string {
-	rand.Seed(time.Now().UTC().UnixNano())
-	domains := findAvailableDomainName()
-	return domains
+rand.Seed(time.Now().UTC().UnixNano())
+
+consonants := []rune{'h', 'k', 'h', 'n', 'm', 'y', 'd', 'r'}
+vowels := []rune{'a', 'e', 'i', 'o', 'u'}
+
+var sites = []string{
+	"https://github.com/%s",
+	"https://twitter.com/%s",
+	"https://facebook.com/%s",
 }
 
-func findAvailableDomainName() string {
-	consonants := []rune{'h', 'k', 'h', 'n', 'm', 'y', 'd', 'r'}
-	vowels := []rune{'a', 'e', 'i', 'o', 'u'}
+var domains chan string
+var httpDomains chan string
+
+func Generate() {
+	go func(){
+		for i := 0; i < 100; i++ {
+			domains <- ConstructString(consonants, vowels)
+		}
+	}()
+
+	go func(){
+		for domain := range domains {
+			httpDomains <- domain
+		}
+	}()
+}
+
+/*func findAvailableDomainName() string {
 	domainName := ""
 	available := false
 
 	for !available {
 		domainName = ConstructString(consonants, vowels)
-		//fmt.Print("testing " + domainName+".com" + " ... ")
-		available = executeHostCommand(domainName + ".com")
-		/*if available {
-			fmt.Println("available !")
-		} else {
-			fmt.Println("not available.")
-		}*/
+		//available = executeHostCommand(domainName + ".com")
 	}
 
 	return domainName
-}
+}*/
 
 func ConstructString(array1 []rune, array2 []rune) string {
 	s := &bytes.Buffer{}
@@ -48,6 +65,30 @@ func pickRandomLetter(array []rune) rune {
 func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
+
+type Check interface {
+	Name() string
+	CheckIfFree() string
+}
+
+type HTTPStatusResponse struct {
+	Site string
+	StatusCode int
+}
+
+func (res HTTPStatusResponse) CheckIfFree() bool{
+	return res.StatusCode == 404
+}
+
+func (res HTTPStatusResponse) Name() string{
+	return res.Site
+}
+
+/*func checkSites(chanRes chan<- Check){
+	for domain := range httpDomains {
+
+	}
+}*/
 
 func executeHostCommand(s string) bool {
 	cmd := exec.Command("host", s)
