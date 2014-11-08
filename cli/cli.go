@@ -28,10 +28,11 @@ func init() {
 }
 
 func main() {
-	// Generate 10 names
+	t := NewThrottler(10)
 	namesGenerator = make(chan string)
 	go func() {
-		for i := 0; i < 10; i++ {
+		for {
+			t.Acquire()
 			namesGenerator <- generator.ConstructString(consonants, vowels)
 		}
 		close(namesGenerator)
@@ -45,12 +46,12 @@ func main() {
 			wg:           &sync.WaitGroup{},
 			chanCheckers: make(chan FreeChecker),
 		}
-		go nameChecker.check(mainWg)
+		go nameChecker.check(mainWg, t)
 	}
 	mainWg.Wait()
 }
 
-func (nameChecker *NameChecker) check(mainWg *sync.WaitGroup) {
+func (nameChecker *NameChecker) check(mainWg *sync.WaitGroup, t *Throttler) {
 	defer mainWg.Done()
 
 	mainWg.Add(1)
@@ -68,6 +69,7 @@ func (nameChecker *NameChecker) check(mainWg *sync.WaitGroup) {
 	}
 
 	fmt.Println(nameChecker.Name+" ? ", nameChecker.IsFree())
+	t.Release()
 }
 
 func (nameChecker *NameChecker) CheckDNS() {
