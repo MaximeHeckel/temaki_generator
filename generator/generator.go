@@ -10,28 +10,31 @@ import (
 	//"sync"
 )
 
-rand.Seed(time.Now().UTC().UnixNano())
-
-consonants := []rune{'h', 'k', 'h', 'n', 'm', 'y', 'd', 'r'}
-vowels := []rune{'a', 'e', 'i', 'o', 'u'}
-
-var sites = []string{
-	"https://github.com/%s",
-	"https://twitter.com/%s",
-	"https://facebook.com/%s",
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
 }
 
-var domains chan string
-var httpDomains chan string
+var (
+	consonants = []rune{'h', 'k', 'h', 'n', 'm', 'y', 'd', 'r'}
+	vowels     = []rune{'a', 'e', 'i', 'o', 'u'}
+	sites      = []string{
+		"https://github.com/%s",
+		"https://twitter.com/%s",
+		"https://facebook.com/%s",
+	}
+
+	domains     chan string
+	httpDomains chan string
+)
 
 func Generate() {
-	go func(){
+	go func() {
 		for i := 0; i < 100; i++ {
 			domains <- ConstructString(consonants, vowels)
 		}
 	}()
 
-	go func(){
+	go func() {
 		for domain := range domains {
 			httpDomains <- domain
 		}
@@ -72,15 +75,15 @@ type Check interface {
 }
 
 type HTTPStatusResponse struct {
-	Site string
+	Site       string
 	StatusCode int
 }
 
-func (res HTTPStatusResponse) CheckIfFree() bool{
+func (res HTTPStatusResponse) CheckIfFree() bool {
 	return res.StatusCode == 404
 }
 
-func (res HTTPStatusResponse) Name() string{
+func (res HTTPStatusResponse) Name() string {
 	return res.Site
 }
 
